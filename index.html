@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="GhostShield helps you understand website security signals and cookie privacy.">
+<meta name="theme-color" content="#101827">
+<title>GhostShield — Website Security & Privacy</title>
+<style>
+:root{color-scheme:dark;--bg:#0b1220;--panel:#111d30;--panel2:#17263b;--line:#263a52;--text:#eef5ff;--muted:#9aabc1;--mint:#63e6c2;--amber:#f6c56d;--red:#ff8d8d}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 15% 0%,#123a46 0,transparent 35%),var(--bg);color:var(--text);font:15px/1.55 system-ui,-apple-system,Segoe UI,sans-serif}
+main{max-width:1040px;margin:auto;padding:28px 18px 60px}.top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:34px}.brand{display:flex;align-items:center;gap:12px;font-weight:800;font-size:22px}.logo{display:grid;place-items:center;width:44px;height:44px;border-radius:14px;background:#163d43;color:var(--mint);font-size:25px}.pill{border:1px solid var(--line);border-radius:30px;padding:5px 10px;color:var(--muted);font-size:12px}
+.hero{margin-bottom:24px}.eyebrow{color:var(--mint);font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase}.hero h1{font-size:clamp(30px,5vw,48px);line-height:1.1;margin:8px 0 12px;letter-spacing:-.04em}.hero p,.muted{color:var(--muted)}.hero p{max-width:690px;margin:0}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.card{background:linear-gradient(145deg,#14243a,#101b2d);border:1px solid var(--line);border-radius:18px;padding:20px;min-width:0}.wide{grid-column:1/-1}.card h2{font-size:18px;margin:0 0 5px}.card p{margin:4px 0 14px}.field{width:100%;background:#0b1525;color:var(--text);border:1px solid #31465e;border-radius:10px;padding:12px;font:inherit;min-width:0}.btn{border:0;border-radius:10px;background:#087f73;color:white;font-weight:750;padding:12px 16px;cursor:pointer;font:inherit}.btn:hover{background:#099889}.btn:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--mint);outline-offset:3px}.row{display:flex;gap:9px}.row>*{min-width:0}.row input{flex:1}.result{margin-top:15px;padding:14px;border-radius:12px;background:#0b1728;border:1px solid var(--line)}.hidden{display:none!important}.check{display:flex;justify-content:space-between;gap:12px;padding:9px 0;border-bottom:1px solid #26384c}.check:last-child{border:0}.ok{color:var(--mint)}.warn{color:var(--amber)}.bad{color:var(--red)}.meter{height:7px;background:#29394c;border-radius:9px;overflow:hidden;margin:10px 0}.meter span{display:block;height:100%;background:var(--mint);width:0}
+.toggle{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:12px 0;border-bottom:1px solid #26384c}.toggle:last-child{border:0}.toggle small{display:block;color:var(--muted)}input[type=checkbox]{width:19px;height:19px;accent-color:#0d9488}
+ul{padding-left:20px;color:var(--muted)}li{margin:7px 0}.note{border-left:3px solid var(--amber);padding:10px 13px;background:#29251b;border-radius:0 9px 9px 0;color:#e9d6ad;font-size:13px;margin-top:14px}.foot{text-align:center;color:var(--muted);font-size:12px;margin-top:28px}
+@media(max-width:680px){main{padding:20px 13px 42px}.grid{grid-template-columns:1fr}.wide{grid-column:auto}.row{flex-direction:column}.top{align-items:flex-start}}
+</style>
+</head>
+<body><main>
+<header class="top"><div class="brand"><div class="logo">⬡</div><span>GhostShield</span></div><span class="pill">WEB EDITION · V1</span></header>
+<section class="hero"><div class="eyebrow">Privacy starts with awareness</div><h1>Your browsing.<br> Your rules.</h1><p>A simple privacy dashboard for preliminary URL checks, cookie education, and building a safer cookie-consent policy.</p></section>
+<div class="grid">
+<section class="card wide">
+<h2>Website security scanner</h2><p class="muted">Enter a website URL for preliminary checks that run locally in this page.</p>
+<form id="scanForm"><div class="row"><input class="field" id="url" type="url" placeholder="https://example.com" required><button class="btn" type="submit">Analyze website</button></div></form>
+<div id="scanResult" class="result hidden" aria-live="polite"><div class="check"><b id="host"></b><span class="pill">Local URL checks</span></div><div class="meter"><span id="meter"></span></div><div id="checks"></div><p class="muted" style="font-size:12px;margin-bottom:0">This is not a remote vulnerability scan. It does not retrieve response headers, inspect TLS certificates, crawl pages, or test for exploits.</p></div>
+</section>
+<section class="card">
+<h2>Cookie Guardian</h2><p class="muted">Create your preferred cookie-consent policy.</p>
+<label class="toggle"><span><b>Block third-party tracking</b><small>Reject cross-site tracking where supported</small></span><input id="third" type="checkbox" checked></label>
+<label class="toggle"><span><b>Reject non-essential cookies</b><small>Prefer essential-only consent</small></span><input id="nonessential" type="checkbox" checked></label>
+<label class="toggle"><span><b>Clear known tracking cookies</b><small>Include them in a cleanup policy</small></span><input id="cleanup" type="checkbox" checked></label>
+<button class="btn" id="policy" style="width:100%;margin-top:15px">Generate privacy policy</button><div id="policyResult" class="result hidden" aria-live="polite"></div>
+<div class="note">A website-only dashboard cannot intercept or change cookies on unrelated websites. Browser-level blocking requires a browser extension or browser privacy settings.</div>
+</section>
+<section class="card">
+<h2>Cookie classification lab</h2><p class="muted">Learn what common cookie categories do.</p>
+<select id="cookieType" class="field"><option value="session">Session identifier</option><option value="analytics">Analytics identifier</option><option value="advertising">Advertising tracker</option><option value="preferences">Preference cookie</option><option value="unknown">Unknown cookie</option></select>
+<button class="btn" id="classify" style="width:100%;margin-top:10px">Classify cookie</button><div id="classResult" class="result hidden" aria-live="polite"></div>
+</section>
+<section class="card">
+<h2>What a full security audit checks</h2><p class="muted">These checks require a trusted remote scanner and appropriate authorization.</p>
+<div class="check"><span>HTTPS and TLS configuration</span><span class="warn">Remote check</span></div>
+<div class="check"><span>Security response headers</span><span class="warn">Remote check</span></div>
+<div class="check"><span>Cookie flags: Secure, HttpOnly, SameSite</span><span class="warn">Remote check</span></div>
+<div class="check"><span>Mixed content and trackers</span><span class="warn">Page inspection</span></div>
+<div class="check"><span>Known vulnerable components</span><span class="warn">Authorized audit</span></div>
+</section>
+</div>
+<footer class="foot">GhostShield · Privacy starts with awareness.<br>Prototype edition · No data is sent to a GhostShield server.</footer>
+</main>
+<script>
+(() => {
+const $ = id => document.getElementById(id);
+$('scanForm').addEventListener('submit', e => {
+ e.preventDefault(); let u;
+ try { u = new URL($('url').value.trim()); if(!['http:','https:'].includes(u.protocol)) throw Error(); }
+ catch { $('scanResult').classList.remove('hidden'); $('host').textContent='Invalid URL'; $('checks').textContent='Enter a valid HTTP or HTTPS URL.'; $('meter').style.width='0'; return; }
+ const tests=[
+  ['HTTPS scheme',u.protocol==='https:'?'URL uses HTTPS':'URL uses HTTP; use HTTPS instead',u.protocol==='https:'],
+  ['Hostname format',u.hostname.includes('.')?'Hostname appears structurally valid':'Hostname may be incomplete',u.hostname.includes('.')],
+  ['Embedded credentials',u.username||u.password?'URL contains embedded credentials':'No credentials embedded in URL',!u.username&&!u.password],
+  ['Custom port',u.port?'Custom port specified: '+u.port:'No explicit custom port',!u.port]
+ ];
+ $('scanResult').classList.remove('hidden');$('host').textContent=u.hostname;
+ $('meter').style.width=(tests.filter(t=>t[2]).length/tests.length*100)+'%';
+ $('checks').replaceChildren(...tests.map(t=>{let d=document.createElement('div');d.className='check';let a=document.createElement('span');a.textContent=t[0];let b=document.createElement('span');b.className=t[2]?'ok':'warn';b.textContent=(t[2]?'✓ ':'! ')+t[1];d.append(a,b);return d;}));
+});
+$('policy').addEventListener('click',()=>{
+ const settings=[['Third-party tracking',$('third').checked],['Non-essential cookies',$('nonessential').checked],['Tracking-cookie cleanup',$('cleanup').checked]];
+ const box=$('policyResult');box.classList.remove('hidden');box.replaceChildren();
+ let title=document.createElement('b');title.textContent='Your selected privacy policy';box.append(title);
+ settings.forEach(([name,on])=>{let p=document.createElement('div');p.className='check';let a=document.createElement('span');a.textContent=name;let b=document.createElement('span');b.className=on?'ok':'warn';b.textContent=on?'Enabled':'Disabled';p.append(a,b);box.append(p);});
+ let note=document.createElement('p');note.className='muted';note.style.fontSize='12px';note.textContent='A site must implement and honor consent choices for this policy to take effect.';box.append(note);
+});
+const types={
+ session:['Essential / functional','Often needed to maintain a login or shopping session. Never replace authentication cookies with fabricated values.'],
+ analytics:['Analytics','Measures visits and usage. Depending on the site and applicable law, these cookies may be optional.'],
+ advertising:['Advertising / tracking','May be used to build advertising profiles across sites. Consider rejecting when non-essential.'],
+ preferences:['Preference','May remember language or display settings. Whether it is essential depends on the implementation.'],
+ unknown:['Unknown','Treat as unclassified until its owner, purpose, duration, and data use are verified.']
+};
+$('classify').addEventListener('click',()=>{let [title,desc]=types[$('cookieType').value],box=$('classResult');box.classList.remove('hidden');box.replaceChildren();let b=document.createElement('b');b.textContent=title;let p=document.createElement('p');p.className='muted';p.textContent=desc;box.append(b,p);});
+})();
+</script></body></html>
